@@ -23,7 +23,7 @@ struct CreateXCFramework: ParsableCommand {
     }
 
     func createxcframeworks(with commandBuilder: CommandBuilder) {
-        print("Cleaning Package")
+        print("Cleaning Package 25")
         execute(commandBuilder.cleanCommand)
 
         print("Building Package")
@@ -44,6 +44,7 @@ struct CreateXCFramework: ParsableCommand {
         }
 
         print("Creating XCFrameworks")
+        print(frameworkNames)
         frameworkNames.forEach { name in
             execute(commandBuilder.xcframeworkCommand(for: name))
             execute(commandBuilder.copyResourcesCommand(for: name, platfrom: platform))
@@ -66,6 +67,7 @@ struct CreateXCFramework: ParsableCommand {
 
     @discardableResult
     func execute(_ command: String) -> String {
+        print(command)
         let task = Process()
         let pipe = Pipe()
 
@@ -77,7 +79,7 @@ struct CreateXCFramework: ParsableCommand {
 
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         let output = String(data: data, encoding: .utf8)!
-
+        print(output)
         return output
     }
 }

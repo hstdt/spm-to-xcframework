@@ -16,7 +16,7 @@ struct CommandBuilder {
     ) {
         self.scheme = scheme
         self.enableLibraryEvolution = enableLibraryEvolution
-        self.platforms = platforms.isEmpty ? [.ios, .simulator] : platforms
+        self.platforms = platforms.isEmpty ? [.ios, .iosSimulator, .visionos, .visionosSimulator] : platforms
 
         if let value = path {
             self.path = (value as NSString).expandingTildeInPath
@@ -53,10 +53,9 @@ extension CommandBuilder {
             \(buildDirCommand) \
             \(platform.destination) \
             -configuration Release \
-            -sdk \(platform.sdk) \
+            -sdk \(platform.sdk!) \
             BUILD_LIBRARY_FOR_DISTRIBUTION=\(enableLibraryEvolution ? "YES" : "NO") \
-            ARCHS=\"\(platform.archs)\" \
-            BITCODE_GENERATION_MODE=\(platform.supportsBitcode ? "bitcode" : "marker")
+            ARCHS=\"\(platform.archs)\"
             """
         }
 
@@ -100,7 +99,7 @@ extension CommandBuilder {
                 "\(frameworksPath)/\(platform.name)/\(name).framework"
             }
             .joined(separator: " -framework ")
-
+        print(allFrameworks)
         return "xcodebuild -create-xcframework -framework \(allFrameworks) \(enableLibraryEvolution ? "" : "-allow-internal-distribution") -output \(xcframeworkPath)/\(name).xcframework"
     }
 
